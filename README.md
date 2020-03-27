@@ -1,5 +1,9 @@
 # whiskeysours
 
+### Dependencies 
+pip install scprep 
+pip install geopandas
+
 ![schematic](https://covid-measures.github.io/model_schematic.png)
 
 ### Parameters
@@ -77,3 +81,5 @@ and
 $$P(D(t+1) | H(t) \text{ and not } H(t+1)) = \delta$$
 
 $$P(R(t+1) | H(t) \text{ and not } H(t+1)) = 1-\delta.$$
+
+
