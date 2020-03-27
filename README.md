@@ -1,2 +1,79 @@
 # whiskeysours
-Scott and Mila model COVID19 spread 
+
+![schematic](https://covid-measures.github.io/model_schematic.png)
+
+### Parameters
+
+* $R_0$: number of expected secondary cases in a wholly susceptible population.
+* $\gamma$: 1/time for which a patient is infectious
+* $\beta_0 = R_0 \times \gamma$: transmissibility, or people infected by patient per day
+* $\alpha$: percentage of cases that are asymptomatic
+* $\lambda_p$: 1/time before symptoms appear
+* $\lambda_a$: 1/time for asymptomatic to recover
+* $\lambda_m$: 1/time for minorly symptomatic to recover
+* $\lambda_s$: 1/time for severely symptomatic to be hospitalized
+* $\rho$: 1/time for leaving hospital
+* $\delta$: fraction of hospitalizations leading to death
+* $\mu$: fraction of symptomatic cases which do not require hospitalization
+
+#### Parameter estimates
+
+* $1.6 < R_0 < 2.3$
+* $\gamma = \frac{1}{7}$ or...
+* $0.3299 < \beta_0 < 0.371$
+* $0.308 < \alpha < 0.517$
+* $\lambda_p = 2$
+* $\lambda_a = 0.1429$
+* $\lambda_m = 0.1429$
+* $\lambda_s = 0.1736$
+* $0.0689< \rho < 0.087$
+* $0.14 < \delta < 0.33$
+* $\mu = 0.956$
+
+Sources:
+* [Marissa Childs, Morgan Kain, Devin Kirk, Mallory Harris, Jacob Ritchie, Lisa Couper, Isabel Delwel, Nicole Nova, Erin Mordecai](https://github.com/morgankain/COVID_interventions/blob/master/covid_params.csv)
+* [Paige Miller, Pej Rohani, John Drake](http://2019-coronavirus-tracker.com/parameters-supplement.html)
+
+### Model Specification
+
+Let $N_c$ be the average number of interactions each person has in a day, $N_0$ be the population, $N_i$ be the number of infectious people. Then naively,
+
+$$P(E(t+1) | S(t)) = \frac{N_c N_i}{N_0}.$$
+
+Note: we will actually determine this based on contacts with infected people. So
+
+$$P(E(t+1) | S(t)) = 1 - \prod_{\text{patient }i}(1 - P(\text{contact with patient }i) P(\text{patient }i\text{ infectious})).$$
+
+The probability of transmitting the disease on contact is
+
+$$P(I_A(t+1) \text{ or } I_P(t+1) | E(t)) = \frac{\beta_0}{N_c}$$
+
+and otherwise, a person remains susceptible
+
+$$P(S(t+1) | E(t)) = 1-\frac{\beta_0}{N_c}.$$
+
+We treat appearance of symptoms and recovery as geometrically distributed with $p = \frac{\lambda}{1+\lambda}$. So
+
+$$P(I_P(t+1)|I_P(t)) = 1-\lambda_p$$
+$$P(I_A(t+1)|I_A(t)) = 1-\lambda_a$$
+$$P(I_M(t+1)|I_M(t)) = 1-\lambda_m$$
+$$P(I_S(t+1)|I_S(t)) = 1-\lambda_s$$
+$$P(H(t+1)|H(t)) = 1-\rho.$$
+
+Finally, the remaining transition probabilities are defined as follows:
+
+$$P(I_A(t+1) | I_A(t+1) \text{ or } I_P(t+1)) = \alpha$$
+
+$$P(I_P(t+1) | I_A(t+1) \text{ or } I_P(t+1)) = 1 - \alpha$$
+
+and
+
+$$P(I_M(t+1) | I_P(t) \text{ and not } I_P(t+1)) = \mu$$
+
+$$P(I_S(t+1) | I_P(t) \text{ and not } I_P(t+1)) = 1 - \mu$$
+
+and
+
+$$P(D(t+1) | H(t) \text{ and not } H(t+1)) = \delta$$
+
+$$P(R(t+1) | H(t) \text{ and not } H(t+1)) = 1-\delta.$$
