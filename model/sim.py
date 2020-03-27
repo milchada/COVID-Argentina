@@ -64,6 +64,8 @@ def simulate(N0=200, T=100, N_infected=10, init_range=(-10, 10), gravity=0.001, 
         "tests": test_df,
         "hospital": hospital_df,
         "deaths": death_df,
+        "patients": pd.DataFrame({"patient": np.unique(location_df["patient"])}),
+        "dates": pd.DataFrame({"date": np.unique(location_df["date"])}),
     }
     return sim
 
