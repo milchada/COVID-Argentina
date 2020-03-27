@@ -1,0 +1,195 @@
+---
+title: "COVID19 Death Rate"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+cases_df <- read_csv("time_series_2019-ncov-Confirmed.csv") %>%
+  rename(state=`Province/State`, country=`Country/Region`, lat=Lat, long=Long) %>%
+  gather("date", "cases", -state, -country, -lat, -long) %>%
+  mutate(date=as.Date(date, "%m/%d/%y"))
+cases_df
+```
+
+
+```{r}
+deaths_df <- read_csv("time_series_2019-ncov-Deaths.csv") %>%
+  rename(state=`Province/State`, country=`Country/Region`, lat=Lat, long=Long) %>%
+  gather("date", "deaths", -state, -country, -lat, -long) %>%
+  mutate(date=as.Date(date, "%m/%d/%y"))
+deaths_df
+```
+```{r}
+deaths_df %>%
+  mutate(jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  ggplot(aes(date, deaths, color=jurisdiction)) + geom_line(show.legend=FALSE) + scale_y_log10()
+```
+
+```{r}
+expand.grid(dt=0:21, start_date=0:45)
+```
+
+
+```{r}
+dt_df <- expand.grid(dt=0:21, start_date=0:45) %>%
+  mutate(death_rate_sd = map2_dbl(dt, start_date, function(dt, start_date) {
+    summary_df <- inner_join(deaths_df, 
+                             cases_df %>% mutate(date=date+dt), 
+                             by=c("state", "country", "lat", "long", "date")) %>%
+      filter(date > min(date) + start_date,
+             country == "China",
+             state == "Hubei") %>%
+      mutate(death_rate = deaths / cases) %>%
+      group_by(state, country) %>%
+      summarise(death_rate_median = median(death_rate),
+                death_rate_mean = mean(death_rate),
+                death_rate_sd = sd(death_rate)) %>%
+      ungroup() %>%
+      filter(is.finite(death_rate_sd)) %>%
+      summarise_if(is.numeric, mean)
+    summary_df$death_rate_sd
+  }))
+dt_df %>%
+  filter(start_date > 15) %>%
+  ggplot(aes(dt, death_rate_sd, color=start_date, group=start_date)) +
+  geom_line()
+```
+
+```{r}
+dt <- 13
+df <- inner_join(deaths_df, 
+           cases_df %>% mutate(date=date+dt), 
+           by=c("state", "country", "lat", "long", "date"))
+df
+```
+
+
+```{r fig.width=12}
+df %>%
+  filter(deaths > 0) %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  ggplot(aes(date, death_rate, color=jurisdiction)) +
+  geom_line(show.legend = FALSE) +
+  geom_point(show.legend = FALSE) +
+  scale_y_log10()
+```
+
+Let's restrict just to cases where death rate has stablised.
+
+```{r}
+df %>%
+  filter(deaths > 0, date > as.Date("2020-03-01")) %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  group_by(jurisdiction) %>%
+  summarise(death_rate_est = median(death_rate),
+            death_rate_std = sd(death_rate)) %>%
+  ungroup() %>%
+  ggplot(aes(death_rate_std)) +
+  geom_histogram() +
+  scale_x_log10()
+```
+
+```{r}
+start_date <- as.Date("2020-03-01")
+stable_df <- df %>%
+  filter(deaths > 0, date > start_date) %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  group_by(jurisdiction) %>%
+  filter(all(deaths > 0)) %>%
+  summarise(death_rate_est = median(death_rate),
+            death_rate_std = sd(death_rate)) %>%
+  ungroup() %>%
+  filter(death_rate_est < 0.1,
+         death_rate_std < 0.005)
+stable_df
+```
+
+```{r}
+df %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  filter(jurisdiction %in% stable_df$jurisdiction) %>%
+  ggplot(aes(date, death_rate, color=jurisdiction)) +
+  geom_line() +
+  geom_point() +
+  scale_y_log10() + 
+  coord_cartesian(xlim=c(start_date, max(df$date)))
+```
+
+```{r}
+df %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  filter(jurisdiction %in% stable_df$jurisdiction,
+         date == max(date)) %>%
+  summarise(death_rate=mean(death_rate))
+```
+
+
+```{r}
+for (i in stable_df$jurisdiction) cat(paste0('"', i, '"=,\n'))
+```
+
+```{r}
+pop_df <- list("Anhui_China"=62,
+"Bahrain"=1.49,
+"Beijing_China"=21.54,
+"Chongqing_China"=30.5,
+"Diamond Princess_Cruise Ship"=0.0037,
+"Fujian_China"=38.6,
+"Gansu_China"=25.6,
+"Grand Princess_US"=0.0037,
+"Guangdong_China"=113.5,
+"Guangxi_China"=48.4,
+"Guizhou_China"=34.8,
+"Hainan_China"=9.26,
+"Hebei_China"=74.7,
+"Heilongjiang_China"=38.3,
+"Henan_China"=94,
+"Hong Kong_China"=7.4,
+"Hubei_China"=58.5,
+"Hunan_China"=67.4,
+"Inner Mongolia_China"=24.7,
+"Israel"=8.7,
+"Jiangxi_China"=45.2,
+"Jilin_China"=27.5,
+"Liaoning_China"=43.9,
+"Shaanxi_China"=37.3,
+"Shandong_China"=92.5,
+"Shanghai_China"=24.3,
+"Sichuan_China"=81.1,
+"Singapore"=5.6,
+"Thailand"=69,
+"Tianjin_China"=11.56,
+"Xinjiang_China"=21.8,
+"Yunnan_China"=45.97,
+"Zhejiang_China"=57.4
+) %>%
+  as_data_frame() %>%
+  gather(jurisdiction, population)
+pop_df
+```
+```{r}
+df %>%
+  mutate(death_rate = deaths / cases,
+         jurisdiction=ifelse(is.na(state), country, paste(state, country, sep="_"))) %>%
+  filter(jurisdiction %in% stable_df$jurisdiction,
+         date == max(date)) %>%
+  left_join(pop_df) %>%
+  summarise(death_rate=sum(death_rate * population) / sum(population))
+```
+
