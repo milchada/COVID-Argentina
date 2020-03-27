@@ -2,6 +2,7 @@
 
 ### Demonstrations 
 Using location data to map who was in contact with who else: https://nbviewer.jupyter.org/github/milchada/COVID-Argentina/blob/master/notebooks/COVID_Argentina_contact_graph.ipynb
+
 A simulation that takes currently known information about who is tested positive, and probabilistically forward models which of the other people are expected to be infected, recover, or die as a function of time. https://gist.github.com/milchada/283f92eab0747632a4d19df7d4623b9e
 
 ### Dependencies 
