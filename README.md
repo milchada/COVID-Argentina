@@ -1,13 +1,19 @@
 # whiskeysours
 
-### Demonstrations 
-Using location data to map who was in contact with who else: https://nbviewer.jupyter.org/github/milchada/COVID-Argentina/blob/master/notebooks/COVID_Argentina_contact_graph.ipynb
+### Demonstrations
+Using location data to map which areas are likely to have most cases: https://nbviewer.jupyter.org/github/milchada/COVID-Argentina/blob/master/notebooks/south-korea/heatmap.ipynb
 
-A simulation that takes currently known information about who is tested positive, and probabilistically forward models which of the other people are expected to be infected, recover, or die as a function of time. https://gist.github.com/milchada/283f92eab0747632a4d19df7d4623b9e
+Using location data to map who was in contact with who else: https://nbviewer.jupyter.org/github/milchada/COVID-Argentina/blob/master/notebooks/south-korea/contact-graph.ipynb
 
-### Dependencies 
-pip install scprep 
-pip install geopandas
+A simulation that takes currently known information about who is tested positive, and probabilistically forward models which of the other people are expected to be infected, recover, or die as a function of time. https://nbviewer.jupyter.org/github/milchada/COVID-Argentina/blob/master/notebooks/simulation/hmm-sim.ipynb
+
+### Dependencies
+
+```
+pip install -r requirements.txt
+```
+
+## Mathematical details
 
 ![schematic](https://covid-measures.github.io/model_schematic.png)
 
@@ -86,5 +92,3 @@ and
 $$P(D(t+1) | H(t) \text{ and not } H(t+1)) = \delta$$
 
 $$P(R(t+1) | H(t) \text{ and not } H(t+1)) = 1-\delta.$$
-
-
