@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from . import constants
+from . import constants, utils
 
 STATES = {
     0: "S",  # susceptible
@@ -15,14 +15,17 @@ STATES = {
     8: "D",  # dead
 }
 INFECTIOUS_STATES = [2, 3, 4, 5]
+TESTABLE_STATES = [0, 1, 2, 3, 4, 5]
 
 
 def daily_contacts(location_df, patient, date, distance_cutoff=1.5):
     date_df = location_df.loc[location_df["date"] == date]
-    patient_df = date_df.loc[date_df["patient"] == patient]
+    patient = utils.force_array(patient)
+    patient_idx = np.isin(date_df["patient"], patient)
+    patient_df = date_df.loc[patient_idx]
     if patient_df.shape[0] == 0:
         return []
-    others_df = date_df.loc[date_df["patient"] != patient]
+    others_df = date_df.loc[~patient_idx]
     contact = (
         cdist(
             patient_df[["latitude", "longitude"]], others_df[["latitude", "longitude"]]
@@ -34,15 +37,28 @@ def daily_contacts(location_df, patient, date, distance_cutoff=1.5):
     return contact_patients
 
 
-def calculate_Nc(sim, distance_cutoff=1.5):
+def _calculate_Nc(location_df, patients=None, dates=None, distance_cutoff=1.5):
+    if patients is None:
+        patients = np.unique(location_df["patient"])
+    if dates is None:
+        dates = np.unique(location_df["date"])
     Nc = np.mean(
         [
-            len(daily_contacts(sim["location"], p, t, distance_cutoff=distance_cutoff))
-            for t in sim["dates"]["date"]
-            for p in sim["patients"]["patient"]
+            len(daily_contacts(location_df, p, t, distance_cutoff=distance_cutoff))
+            for t in dates
+            for p in patients
         ]
     )
     return Nc
+
+
+def calculate_Nc(sim, distance_cutoff=1.5):
+    return _calculate_Nc(
+        sim["location"],
+        patients=sim["patients"]["patient"],
+        dates=sim["dates"]["date"],
+        distance_cutoff=distance_cutoff,
+    )
 
 
 def calculate_p_exposed(location_df, state, patient, date, distance_cutoff=1.5):
