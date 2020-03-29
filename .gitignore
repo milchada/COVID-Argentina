@@ -3,3 +3,4 @@ __pycache__
 desktop.ini
 *checkpoint.ipynb
 .ipynb_checkpoints
+.DS_Store
