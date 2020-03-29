@@ -1,4 +1,5 @@
 .Rhistory
 __pycache__
 desktop.ini
-
+*checkpoint.ipynb
+.ipynb_checkpoints
