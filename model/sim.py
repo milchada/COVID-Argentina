@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from scipy.spatial.distance import pdist, cdist, squareform
 
 from . import constants
@@ -70,53 +71,76 @@ def simulate(N0=200, T=100, N_infected=10, init_range=(-10, 10), gravity=0.001, 
     return sim
 
 
-def plot_sim(sim, color_status=True, alpha=0.3, **kwargs):
+def plot_sim_status(sim, alpha=0.3, **kwargs):
+    fig, ax = plt.subplots()
+    cmap = {
+        "unknown": "grey",
+        "sick": "orange",
+        "hospital": "red",
+        "dead": "black",
+        "healthy": "green",
+    }
     for patient in np.unique(sim["location"]["patient"]):
         location_df = (
             sim["location"]
             .loc[sim["location"]["patient"] == patient]
             .sort_values("date")
         )
-        if color_status:
-            for i in range(location_df.shape[0] - 1):
-                date = location_df.iloc[i]["date"]
-                if np.any(
-                    (sim["deaths"]["patient"] == patient)
-                    & (sim["deaths"]["date"] <= date)
-                ):
-                    # dead
-                    color = "black"
-                elif np.any(
-                    (sim["hospital"]["patient"] == patient)
-                    & (sim["hospital"]["date"] <= date)
-                ):
-                    # hospitalized
-                    color = "red"
-                elif np.any(
-                    (sim["tests"]["patient"] == patient)
-                    & (sim["tests"]["date"] <= date)
-                    & (sim["tests"]["result"])
-                ):
-                    # tested positive
-                    color = "orange"
-                elif np.any(
-                    (sim["tests"]["patient"] == patient)
-                    & (sim["tests"]["date"] <= date)
-                    & (~sim["tests"]["result"])
-                ):
-                    # tested negative
-                    color = "green"
-                else:
-                    color = "grey"
-                plt.plot(
-                    location_df.iloc[[i, i + 1]]["longitude"],
-                    location_df.iloc[[i, i + 1]]["latitude"],
-                    color=color,
-                    alpha=alpha,
-                    **kwargs
-                )
-        else:
-            plt.plot(
-                location_df["longitude"], location_df["latitude"], alpha=alpha, **kwargs
+        for i in range(location_df.shape[0] - 1):
+            date = location_df.iloc[i]["date"]
+            if np.any(
+                (sim["deaths"]["patient"] == patient) & (sim["deaths"]["date"] <= date)
+            ):
+                # dead
+                color = cmap["dead"]
+            elif np.any(
+                (sim["hospital"]["patient"] == patient)
+                & (sim["hospital"]["date"] <= date)
+            ):
+                # hospitalized
+                color = cmap["hospital"]
+            elif np.any(
+                (sim["tests"]["patient"] == patient)
+                & (sim["tests"]["date"] <= date)
+                & (sim["tests"]["result"])
+            ):
+                # tested positive
+                color = cmap["sick"]
+            elif np.any(
+                (sim["tests"]["patient"] == patient)
+                & (sim["tests"]["date"] <= date)
+                & (~sim["tests"]["result"])
+            ):
+                # tested negative
+                color = cmap["healthy"]
+            else:
+                color = cmap["unknown"]
+            ax.plot(
+                location_df.iloc[[i, i + 1]]["longitude"],
+                location_df.iloc[[i, i + 1]]["latitude"],
+                color=color,
+                alpha=alpha,
+                **kwargs
             )
+    scprep.plot.tools.generate_legend(ax=ax, cmap=cmap, bbox_to_anchor=(1, 1))
     plt.show()
+
+
+def plot_sim_patient(sim, alpha=0.3, **kwargs):
+    for patient in np.unique(sim["location"]["patient"]):
+        location_df = (
+            sim["location"]
+            .loc[sim["location"]["patient"] == patient]
+            .sort_values("date")
+        )
+        plt.plot(
+            location_df["longitude"], location_df["latitude"], alpha=alpha, **kwargs
+        )
+    plt.show()
+
+
+def plot_sim(sim, color_status=True, alpha=0.3, **kwargs):
+    if color_status:
+        plot_sim_status(sim, alpha=alpha, **kwargs)
+    else:
+        plot_sim_patient(sim, alpha=alpha, **kwargs)
