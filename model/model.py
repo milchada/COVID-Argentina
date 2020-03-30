@@ -18,7 +18,7 @@ INFECTIOUS_STATES = [2, 3, 4, 5]
 TESTABLE_STATES = [0, 1, 2, 3, 4, 5]
 
 
-def daily_contacts(location_df, patient, date, distance_cutoff=1.5):
+def daily_contacts(location_df, patient, date, distance_cutoff):
     date_df = location_df.loc[location_df["date"] == date]
     patient = utils.force_array(patient)
     patient_idx = np.isin(date_df["patient"], patient)
@@ -37,22 +37,38 @@ def daily_contacts(location_df, patient, date, distance_cutoff=1.5):
     return contact_patients
 
 
-def _calculate_Nc(location_df, patients=None, dates=None, distance_cutoff=1.5):
+def _sample_Nc(location_df, patients, dates, distance_cutoff, n_samples=10):
+    return np.mean(
+        [
+            len(daily_contacts(location_df, p, t, distance_cutoff=distance_cutoff))
+            for p in np.random.choice(patients, n_samples, replace=True)
+            for t in np.random.choice(dates, n_samples, replace=True)
+        ]
+    )
+
+
+def _calculate_Nc(
+    location_df, distance_cutoff, patients=None, dates=None, tol=1e-2, n_samples=10,
+):
     if patients is None:
         patients = np.unique(location_df["patient"])
     if dates is None:
         dates = np.unique(location_df["date"])
-    Nc = np.mean(
-        [
-            len(daily_contacts(location_df, p, t, distance_cutoff=distance_cutoff))
-            for t in dates
-            for p in patients
-        ]
-    )
-    return Nc
+    N_c_est_prev = np.float("inf")
+    N_c = []
+    N_c_est = 0
+    while np.abs(N_c_est - N_c_est_prev) > tol:
+        N_c.append(
+            _sample_Nc(
+                location_df, patients, dates, distance_cutoff, n_samples=n_samples
+            )
+        )
+        N_c_est_prev = N_c_est
+        N_c_est = np.mean(N_c)
+    return N_c_est
 
 
-def calculate_Nc(sim, distance_cutoff=1.5):
+def calculate_Nc(sim, distance_cutoff):
     return _calculate_Nc(
         sim["location"],
         patients=sim["patients"]["patient"],
@@ -61,7 +77,7 @@ def calculate_Nc(sim, distance_cutoff=1.5):
     )
 
 
-def calculate_p_exposed(location_df, state, patient, date, distance_cutoff=1.5):
+def calculate_p_exposed(location_df, state, patient, date, distance_cutoff):
     contact_patients = daily_contacts(
         location_df, patient, date, distance_cutoff=distance_cutoff
     )
@@ -72,7 +88,8 @@ def calculate_p_exposed(location_df, state, patient, date, distance_cutoff=1.5):
     return p_exposed
 
 
-def calculate_transitions(sim, state, patient, date, N_c, distance_cutoff=1.5):
+def calculate_transitions(sim, state, patient, date, distance_cutoff):
+    N_c = sim["N_c"]
     transitions = np.zeros((len(STATES), len(STATES)))
     # S to E transition is determined by contact
     transitions[0, 1] = calculate_p_exposed(
@@ -110,7 +127,7 @@ def initial_state(sim):
     return state
 
 
-def next_state(sim, state, date, N_c):
+def next_state(sim, state, date, distance_cutoff=constants.distance_cutoff):
     next_state = state.copy()
     for patient in sim["patients"]["patient"]:
         if np.any(
@@ -134,6 +151,8 @@ def next_state(sim, state, date, N_c):
             next_state[patient][5] = 1 - constants.mu
         else:
             # out in the world
-            transitions = calculate_transitions(sim, state, patient, date, N_c)
+            transitions = calculate_transitions(
+                sim, state, patient, date, distance_cutoff=distance_cutoff
+            )
             next_state[patient] = (state[[patient]] @ transitions).flatten()
     return next_state

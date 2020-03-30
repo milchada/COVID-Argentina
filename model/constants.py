@@ -8,3 +8,5 @@ lambda_s = 0.1736  # 1/(days till severe case is hospitalised)
 rho = 0.075  # 1/(days in hospital)
 delta = 0.2  # number of deaths/number hospitalised
 mu = 0.9  # 0.956      #fraction of symptomatic cases that don't need hospitalisation
+
+distance_cutoff = 0.012

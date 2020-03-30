@@ -6,3 +6,6 @@ scprep
 geopandas
 pygsp
 descartes
+tasklogger
+joblib
+seaborn
