@@ -18,8 +18,6 @@ pip install -r requirements.txt
 ![schematic](https://covid-measures.github.io/model_schematic.png)
 
 ### Parameters
-    <!-- h<sub>&theta;</sub>(x) = &theta;<sub>o</sub> x + &theta;<sub>1</sub>x -->
-
 
 * R<sub>0</sub>: number of expected secondary cases in a wholly susceptible population.
 * &gamma;: 1/time for which a patient is infectious
@@ -35,17 +33,17 @@ pip install -r requirements.txt
 
 #### Parameter estimates
 
-* $1.6 < R_0 < 2.3$
-* $\gamma = \frac{1}{7}$ or...
-* $0.3299 < \beta_0 < 0.371$
-* $0.308 < \alpha < 0.517$
-* $\lambda_p = 2$
-* $\lambda_a = 0.1429$
-* $\lambda_m = 0.1429$
-* $\lambda_s = 0.1736$
-* $0.0689< \rho < 0.087$
-* $0.14 < \delta < 0.33$
-* $\mu = 0.956$
+* 1.6 < R<sub>0</sub> < 2.3
+* &gamma; = <sup>1</sup>&frasl;<sub>7</sub> or...
+* 0.3299 < &beta; <sub>0</sub> < 0.371
+* 0.308 < &alpha; < 0.517
+* &lambda;<sub>p</sub> = 2
+* &lambda;<sub>a</sub> = 0.1429
+* &lambda;<sub>m</sub> = 0.1429
+* &lambda;<sub>s</sub> = 0.1736
+* 0.0689< &rho; < 0.087
+* 0.14 < &delta; < 0.33
+* &mu; = 0.956
 
 Sources:
 * [Marissa Childs, Morgan Kain, Devin Kirk, Mallory Harris, Jacob Ritchie, Lisa Couper, Isabel Delwel, Nicole Nova, Erin Mordecai](https://github.com/morgankain/COVID_interventions/blob/master/covid_params.csv)
