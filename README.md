@@ -7,7 +7,8 @@ This package models the spread of an infectious disease, in this case COVID19, w
 The location data allows us to trace contact between all users. Once a person is exposed (E) to an infected person, there is some chance that they are infected (I). Infected people may or may not (I<sub>A</sub>) show symptoms, but either way can transmit the virus for some time period 1/&gamma;. Of the symptomatic people, some fraction will have mild (M) symptoms, and some severe (S). Some fraction of the severely infected people will be hospitalised (H). Some fraction of those will recover (R), and others will die (D). The evolution from any one state to another has a characteristic timescale 1/&lambda;, which has to be measured for a given community.
 
 
-![schematic](https://covid-measures.github.io/model_schematic.png)
+![schematic](Schematic.png?raw=true)
+[Adapted from Stanford model]
 
 
 We initialise the simulations with values for these timescales and probabilities from the literature. However, as we accummulate data on hospitalisation, recovery and death rates, we will learn the true values of the input parameters in the context of Argentina. For example, infection rates will fall as people practice better social distancing and hygiene, the time to recover will be faster as treatment improves, and death rates may increase if infection rates exceed hospital capacity. 
@@ -66,11 +67,7 @@ Sources:
 
 ### Model Specification
 
-Let N<sub>c</sub> be the average number of interactions each person has in a day, N<sub>0</sub> be the population, N<sub>i</sub> be the number of infectious people. Then naively,
-
-P(E(t+1) | S(t)) = <sup>N<sub>c</sub></sup>&frasl;<sub>N<sub>0</sub></sub>
-
-Note: we will actually determine this based on contacts with infected people. So
+Every infected person i will be infectious from the moment they are infected for a certain time &Delta;t. Every person who has with an infected patient i will also get infected with the probability:
 
 P(E(t+1) | S(t)) = 1 - &prod;{\text{patient }i}(1 - P(\text{contact with patient }i) P(\text{patient }i\text{ infectious}))
 
@@ -82,7 +79,7 @@ and otherwise, a person remains susceptible
 
 P(S(t+1) | E(t)) = 1- <sup>&beta;<sub>0</sub></sup>&frasl;<sub>N<sub>c</sub></sub> 
 
-We treat appearance of symptoms and recovery as geometrically distributed with $p = \frac{\lambda}{1+\lambda}$. So
+We treat appearance of symptoms and recovery as geometrically distributed with p = <sup>&lambda;<sub>0</sub></sup>&frasl;<sub>1+&lambda;</sub>. So
 
 P(I<sub>P</sub>(t+1)|I<sub>P</sub>(t)) = 1- &lambda;<sub>p</sub>
 P(I<sub>A</sub>(t+1)|I<sub>A</sub>(t)) = 1- &lambda;<sub>a</sub>
