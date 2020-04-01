@@ -1,4 +1,4 @@
-# whiskeysours
+# Contact-Based Disease Spread Model
 
 Authors: Scott Gigante and Urmila Chadayammuri
 
