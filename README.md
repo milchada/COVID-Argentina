@@ -6,6 +6,10 @@ This package models the spread of an infectious disease, in this case COVID19, w
 
 The location data allows us to trace contact between all users. Once a person is exposed (E) to an infected person, there is some chance that they are infected (I). Infected people may or may not (I<sub>A</sub>) show symptoms, but either way can transmit the virus for some time period 1/&gamma;. Of the symptomatic people, some fraction will have mild (M) symptoms, and some severe (S). Some fraction of the severely infected people will be hospitalised (H). Some fraction of those will recover (R), and others will die (D). The evolution from any one state to another has a characteristic timescale 1/&lambda;, which has to be measured for a given community.
 
+
+![schematic](https://covid-measures.github.io/model_schematic.png)
+
+
 We initialise the simulations with values for these timescales and probabilities from the literature. However, as we accummulate data on hospitalisation, recovery and death rates, we will learn the true values of the input parameters in the context of Argentina. For example, infection rates will fall as people practice better social distancing and hygiene, the time to recover will be faster as treatment improves, and death rates may increase if infection rates exceed hospital capacity. 
 
 Based on the simulation, we can predict how many people will be infected, both mildly and severely, in different locations, how many will require hospitalisation, and how many will die. We can also predict how each of these numbers can be improved with focussed isolation/quarantine. 
@@ -27,10 +31,6 @@ CEID parameter estimates
 
 pip install -r requirements.txt
 
-
-## Mathematical details
-
-![schematic](https://covid-measures.github.io/model_schematic.png)
 
 ### Parameters
 
