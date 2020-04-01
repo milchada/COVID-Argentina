@@ -18,18 +18,20 @@ pip install -r requirements.txt
 ![schematic](https://covid-measures.github.io/model_schematic.png)
 
 ### Parameters
+    <!-- h<sub>&theta;</sub>(x) = &theta;<sub>o</sub> x + &theta;<sub>1</sub>x -->
 
-* $R_0$: number of expected secondary cases in a wholly susceptible population.
-* $\gamma$: 1/time for which a patient is infectious
-* $\beta_0 = R_0 \times \gamma$: transmissibility, or people infected by patient per day
-* $\alpha$: percentage of cases that are asymptomatic
-* $\lambda_p$: 1/time before symptoms appear
-* $\lambda_a$: 1/time for asymptomatic to recover
-* $\lambda_m$: 1/time for minorly symptomatic to recover
-* $\lambda_s$: 1/time for severely symptomatic to be hospitalized
-* $\rho$: 1/time for leaving hospital
-* $\delta$: fraction of hospitalizations leading to death
-* $\mu$: fraction of symptomatic cases which do not require hospitalization
+
+* R<sub>0</sub>: number of expected secondary cases in a wholly susceptible population.
+* &gamma;: 1/time for which a patient is infectious
+* &beta;<sub>0</sub> = R<sub>0</sub> &sdot; &gamma;: transmissibility, or people infected by patient per day
+* &alpha;: percentage of cases that are asymptomatic
+* &lambda;<sub>p</sub>: 1/time before symptoms appear
+* &lambda;<sub>a</sub>: 1/time for asymptomatic to recover
+* &lambda;<sub>m</sub>: 1/time for minorly symptomatic to recover
+* &lambda;<sub>s</sub>: 1/time for severely symptomatic to be hospitalized
+* &rho;: 1/time for leaving hospital
+* &delta;: fraction of hospitalizations leading to death
+* &mu;: fraction of symptomatic cases which do not require hospitalization
 
 #### Parameter estimates
 
