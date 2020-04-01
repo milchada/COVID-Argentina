@@ -61,7 +61,7 @@ P(E(t+1) | S(t)) = 1 - &prod;{\text{patient }i}(1 - P(\text{contact with patient
 
 The probability of transmitting the disease on contact is
 
-P(I_A(t+1) \text{ or } I_P(t+1) | E(t)) = <sup>&beta;<sub>0</sub></sup>&frasl;<sub>N<sub>c</sub></sub>
+P(I_A(t+1) &or; I_P(t+1) | E(t)) = <sup>&beta;<sub>0</sub></sup>&frasl;<sub>N<sub>c</sub></sub>
 
 and otherwise, a person remains susceptible
 
@@ -77,18 +77,18 @@ P(H(t+1)|H(t)) = 1-&rho;
 
 Finally, the remaining transition probabilities are defined as follows:
 
-P(I_A(t+1) | I_A(t+1) \text{ or } I_P(t+1)) = &alpha;
+P(I_A(t+1) | I_A(t+1) &or; I_P(t+1)) = &alpha;
 
-P(I_P(t+1) | I_A(t+1) \text{ or } I_P(t+1)) = 1 - &alpha;
-
-and
-
-P(I_M(t+1) | I_P(t) \text{ and not } I_P(t+1)) = &mu;
-
-P(I_S(t+1) | I_P(t) \text{ and not } I_P(t+1)) = 1 - &mu;
+P(I_P(t+1) | I_A(t+1) &or; I_P(t+1)) = 1 - &alpha;
 
 and
 
-P(D(t+1) | H(t) \text{ and not } H(t+1)) = &delta;
+P(I_M(t+1) | I_P(t) &and; I_P(t+1)) = &mu;
 
-P(R(t+1) | H(t) \text{ and not } H(t+1)) = 1-&delta;
+P(I_S(t+1) | I_P(t) &and; not I_P(t+1)) = 1 - &mu;
+
+and
+
+P(D(t+1) | H(t) &and; not H(t+1)) = &delta;
+
+P(R(t+1) | H(t) &and; not H(t+1)) = 1-&delta;
