@@ -10,7 +10,7 @@ A person transitions from susceptible to exposed upon contact. From then, they m
 These parameters were measured using cases tracked by China (in Hubei province) and the US. [Paige Miller, Pej Rohani, John Drake](http://2019-coronavirus-tracker.com/parameters-supplement.html)
 
 3) How to fit these parameters as data accrues?
-These parameters *will be different* in Argentina, based on availability of tests, hospitalisation and treatment, as well as the distribution of ages and sanitary practices. We can fit these parameters as data on tests, hospitalisation, recovery and death accrues.
+These parameters *will be different* in Argentina, based on availability of tests, hospitalisation and treatment, as well as the distribution of ages and sanitary practices. We can fit these parameters as data on tests, hospitalisation, recovery and death accrues. We implement the neural net markov model presented in the following reference.
 
 [Ke Tran, Yonatan Bisk, Ashish Vaswani, Daniel Marcu, Kevin Knight](https://arxiv.org/abs/1609.09007)
 
