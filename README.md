@@ -79,28 +79,5 @@ and otherwise, a person remains susceptible
 
 P(S(t+1) | E(t)) = 1- <sup>&beta;<sub>0</sub></sup>&frasl;<sub>N<sub>c</sub></sub> 
 
-We treat appearance of symptoms and recovery as geometrically distributed with p = <sup>&lambda;<sub>0</sub></sup>&frasl;<sub>1+&lambda;</sub>. So
-
-P(I<sub>P</sub>(t+1)|I<sub>P</sub>(t)) = 1- &lambda;<sub>p</sub>
-P(I<sub>A</sub>(t+1)|I<sub>A</sub>(t)) = 1- &lambda;<sub>a</sub>
-P(I<sub>M</sub>(t+1)|I<sub>M</sub>(t)) = 1- &lambda;<sub>m</sub>
-P(I<sub>S</sub>(t+1)|I<sub>S</sub>(t)) = 1- &lambda;<sub>s</sub>
-P(H(t+1)|H(t)) = 1-&rho;
-
-Finally, the remaining transition probabilities are defined as follows:
-
-P(I<sub>A</sub>(t+1) | I<sub>A</sub>(t+1) &or; I<sub>P</sub>(t+1)) = &alpha;
-
-P(I<sub>P</sub>(t+1) | I<sub>A</sub>(t+1) &or; I<sub>P</sub>(t+1)) = 1 - &alpha;
-
-and
-
-P(I<sub>M</sub>(t+1) | I<sub>P</sub>(t) &and; I<sub>P</sub>(t+1)) = &mu;
-
-P(I<sub>S</sub>(t+1) | I<sub>P</sub>(t) &and; not I<sub>P</sub>(t+1)) = 1 - &mu;
-
-and
-
-P(D(t+1) | H(t) &and; not H(t+1)) = &delta;
-
-P(R(t+1) | H(t) &and; not H(t+1)) = 1-&delta;
+We treat appearance of symptoms and recovery as geometrically distributed with p = <sup>&lambda;<sub>0</sub></sup>&frasl;<sub>1+&lambda;</sub>.
+In other words, at time t+1, a person's state may be the same as at the previous step t, if it hasn't changed. 
