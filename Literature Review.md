@@ -1,10 +1,13 @@
-#Literature Review
+# Literature Review
 
 1) The Stanford Model
+[Marissa Childs, Morgan Kain, Devin Kirk, Mallory Harris, Jacob Ritchie, Lisa Couper, Isabel Delwel, Nicole Nova, Erin Mordecai](https://github.com/morgankain/COVID_interventions/)
 
 2) Where are we getting the current parameters from?
+[Paige Miller, Pej Rohani, John Drake](http://2019-coronavirus-tracker.com/parameters-supplement.html)
 
 3) How to model user centrality? 
+Easy - This is simply the number of connections a user has to other users.
 
 4) How do we forward model how much people will interact? 
 This field is called Graph link prediction. Notes from a Tufts course: http://be.amazd.com/link-prediction/
