@@ -1,6 +1,6 @@
 # Literature Review - Forward Modelling Interactions
 
-#Similarity metrics
+## Similarity metrics
 
 In increasing order of complexity:
 
@@ -20,5 +20,5 @@ s<sub>xy</sub> = &sum;<sub>l</sub>&beta;<sup>l</sup>&sdot;|Path<sup>l</sup><sub>
 
 &beta; encodes the exponential damping by path length.
 
-# Node vs Path-based similarity
+## Node vs Path-based similarity
 The Katz algorithm above is path-based, whereas the others are all node-based. The latter is better for networks that are mostly local (i.e. highly clustered), whereas path-based things are useful for more global networks. So, if people are practicing social distancing, we can get away with node-based modelling, which is much faster. However, if we find that people are traveling a lot, we may have to implement a path-based similarity indicator. 
