@@ -1,17 +1,21 @@
-# Literature Review
+# Literature Review - Simulation and Modelling
 
 1) The Stanford Model
+Basic setup of states: Susceptible, Exposed, Infected (Presymptmatic, Mild or Severe), Asymptomatic, Recovered and Dead.
+A person transitions from susceptible to exposed upon contact. From then, they move into successive states with some probability over some characteristic timescale. See README for a full schematic. 
+
 [Marissa Childs, Morgan Kain, Devin Kirk, Mallory Harris, Jacob Ritchie, Lisa Couper, Isabel Delwel, Nicole Nova, Erin Mordecai](https://github.com/morgankain/COVID_interventions/)
 
 2) Where are we getting the current parameters from?
-[Paige Miller, Pej Rohani, John Drake](http://2019-coronavirus-tracker.com/parameters-supplement.html)
+These parameters were measured using cases tracked by China (in Hubei province) and the US. [Paige Miller, Pej Rohani, John Drake](http://2019-coronavirus-tracker.com/parameters-supplement.html)
 
-3) How to model user centrality? 
-Easy - This is simply the number of connections a user has to other users.
+3) How to fit these parameters as data accrues?
+These parameters *will be different* in Argentina, based on availability of tests, hospitalisation and treatment, as well as the distribution of ages and sanitary practices. We can fit these parameters as data on tests, hospitalisation, recovery and death accrues.
+
+[Ke Tran, Yonatan Bisk, Ashish Vaswani, Daniel Marcu, Kevin Knight](https://arxiv.org/abs/1609.09007)
 
 4) How do we forward model how much people will interact? 
 This field is called Graph link prediction. Notes from a Tufts course: http://be.amazd.com/link-prediction/
-<!-- * Related to inferring missing links. We don't specifically worry about this, because for the nodes (people) that we have we can see all the liks at a given time. Ultimately, we can't infer much about nodes we don't track.  -->
 * Start by generating a similarity matrix s<sub>xy</sub> between elements x and y in the graph
 	* Essentially how similar are any nodes to one another
 	* s<sub>xy</sub> = s<sub>yx</sub>
@@ -41,8 +45,3 @@ Some well-known properties of networks come in handy when building algorithms to
 	* This is useful because small world networks have better "computational power, and synchronizability". I.e. faster predictions! 
 	* But worrying because they also have "enhanced signal-propagation speed", i.e. if one person is infected things might spread faster. 
 
-
-5) What is a choropleth map?
-
-6) What are the four proposed models for quarantining?
-https://www.sciencedirect.com/science/article/abs/pii/S0167629613000039
