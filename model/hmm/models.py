@@ -59,9 +59,7 @@ class HMM(torch.nn.Module):
         state_priors = torch.nn.functional.softmax(
             self.unnormalized_state_priors, dim=0
         )
-        transition_matrix = torch.nn.functional.softmax(
-            self.transition_model.unnormalized_transition_matrix, dim=0
-        )
+        transition_matrix = self.transition_model.transition_matrix()
         emission_matrix = torch.nn.functional.softmax(
             self.emission_model.unnormalized_emission_matrix, dim=1
         )
@@ -148,7 +146,18 @@ class TransitionModel(torch.nn.Module):
     def __init__(self, N):
         super(TransitionModel, self).__init__()
         self.N = N  # number of states
-        self.unnormalized_transition_matrix = torch.nn.Parameter(torch.randn(N, N))
+        self.T = torch.nn.Parameter(torch.randn(1, N, N))
+
+    def unnormalized_transition_matrix(self):
+        return self.T
+
+    def transition_matrix(self):
+        return torch.nn.functional.softmax(self.unnormalized_transition_matrix(), dim=1)
+
+    def log_transition_matrix(self):
+        return torch.nn.functional.log_softmax(
+            self.unnormalized_transition_matrix(), dim=1
+        )
 
     def forward(self, log_alpha, use_max):
         """
@@ -157,9 +166,7 @@ class TransitionModel(torch.nn.Module):
         Multiply previous timestep's alphas by transition matrix (in log domain)
         """
         # Each col needs to add up to 1 (in probability domain)
-        log_transition_matrix = torch.nn.functional.log_softmax(
-            self.unnormalized_transition_matrix, dim=0
-        )
+        log_transition_matrix = self.log_transition_matrix()
 
         # Matrix multiplication in the log domain
         # out = genbmm.logbmm(log_alpha.unsqueeze(0).contiguous(), transition_matrix.unsqueeze(0).contiguous())[0]
