@@ -9,3 +9,6 @@ descartes
 tasklogger
 joblib
 seaborn
+
+git+https://github.com/harvardnlp/genbmm
+torch
