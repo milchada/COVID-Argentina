@@ -33,7 +33,9 @@ def expose(states, t, idx, N_c):
 
 def await_incubation(states, t):
     idx = patients_in_state(states, t, 1)
-    states[idx, t + 1] = if_else(idx, constants.alpha, 2, 3)
+    states[idx, t + 1] = if_else(
+        idx, constants.lambda_e, if_else(idx, constants.alpha, 2, 3), 1
+    )
     return states
 
 
