@@ -1,6 +1,7 @@
 N_c = 4  # average number of contacts per day
 beta0 = 0.35  # people infected by patient per day
 alpha = 0.4  # fraction of cases that are asymptomatic
+lambda_e = 1 / 5  # 1/(length of incubation period)
 lambda_p = 1  # 2?   #1/(days till symptoms appear)
 lambda_a = 0.1429  # 1/(days till asymptomatic person recovers)
 lambda_m = 0.1429  # 1/(days till mild case recovers)

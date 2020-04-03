@@ -25,9 +25,7 @@ def simulate(
     sim["contacts"] = contacts.calculate_contacts(sim, distance_cutoff=distance_cutoff)
     sim["N_c"] = contacts.calculate_Nc(sim)
     print("Average daily contacts: {}".format(sim["N_c"]))
-    sim["states"], sim["tests"] = state.simulate_states(
-        sim, N_infected=N_infected, distance_cutoff=distance_cutoff
-    )
+    sim["states"], sim["tests"] = state.simulate_states(sim, N_infected=N_infected)
     sim["hospital"] = state.get_first_occurrence(sim["states"], 6)
     sim["deaths"] = state.get_first_occurrence(sim["states"], 8)
     return sim
