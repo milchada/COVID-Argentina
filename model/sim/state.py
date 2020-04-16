@@ -27,7 +27,7 @@ def patients_in_state(states, t, state):
 def expose(states, t, idx, N_c):
     idx = np.intersect1d(idx, patients_in_state(states, t, 0))
     if len(idx) > 0:
-        states[idx, t + 1] = if_else(idx, constants.beta0 / N_c, 1)
+        states[idx, t + 1] = if_else(idx, constants.beta0 / N_c, 1, 0)
     return states
 
 
