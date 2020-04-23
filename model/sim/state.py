@@ -129,7 +129,7 @@ def simulate_step(states, location_df, tests_df, t, N_c, contacts_df, n_print=10
             contacts_df.loc[np.isin(contacts_df["patient2"], infectious)]["patient1"],
         ]
     )
-    if t % (states.shape[1] // n_print) == 0:
+    if t % max(1, states.shape[1] // n_print) == 0:
         print(
             "t = {}; {} infectious; {} exposed; {} susceptible; {} dead".format(
                 t,
