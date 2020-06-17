@@ -27,9 +27,15 @@ def patients_in_state(states, t, state):
 def expose(states, t, idx, N_c):
     idx = np.intersect1d(idx, patients_in_state(states, t, 0))
     if len(idx) > 0:
-        states[idx, t + 1] = if_else(
-            idx, constants.beta0 / N_c, if_else(idx, constants.alpha, 2, 3), 0
-        )
+        states[idx, t + 1] = if_else(idx, constants.beta0 / N_c, 1, 0)
+    return states
+
+
+def await_incubation(states, t):
+    idx = patients_in_state(states, t, 1)
+    states[idx, t + 1] = if_else(
+        idx, constants.lambda_e, if_else(idx, constants.alpha, 2, 3), 1
+    )
     return states
 
 
@@ -111,19 +117,23 @@ def test_random(states, tests_df, t):
     return test_exposed(states, t, tested_idx)
 
 
-def simulate_step(states, location_df, tests_df, t, N_c, distance_cutoff, n_print=10):
+def simulate_step(states, location_df, tests_df, t, N_c, contacts_df, n_print=10):
     # exposures
-    infectious_idx = np.concatenate(
+    infectious = np.concatenate(
         [patients_in_state(states, t, state) for state in model.INFECTIOUS_STATES]
     )
-    exposed_idx = model.daily_contacts(
-        location_df, infectious_idx, t, distance_cutoff=distance_cutoff
+    contacts_df = contacts_df.loc[contacts_df["date"] == t]
+    exposed_idx = np.concatenate(
+        [
+            contacts_df.loc[np.isin(contacts_df["patient1"], infectious)]["patient2"],
+            contacts_df.loc[np.isin(contacts_df["patient2"], infectious)]["patient1"],
+        ]
     )
-    if t % (states.shape[1] // n_print) == 0:
+    if t % max(1, states.shape[1] // n_print) == 0:
         print(
             "t = {}; {} infectious; {} exposed; {} susceptible; {} dead".format(
                 t,
-                len(infectious_idx),
+                len(infectious),
                 len(exposed_idx),
                 len(patients_in_state(states, t, 0)),
                 len(patients_in_state(states, t, 8)),
@@ -131,6 +141,7 @@ def simulate_step(states, location_df, tests_df, t, N_c, distance_cutoff, n_prin
         )
     states = expose(states, t, exposed_idx, N_c)
     # transitions
+    states = await_incubation(states, t)
     states = await_asymptomatic(states, t)
     states = await_presymptomatic(states, t)
     states = await_symptomatic_mild(states, t)
@@ -151,7 +162,7 @@ def simulate_step(states, location_df, tests_df, t, N_c, distance_cutoff, n_prin
     return states, tests_df
 
 
-def simulate_states(sim, distance_cutoff, N_infected=15):
+def simulate_states(sim, N_infected=15):
     with tasklogger.log_task("states"):
         N0 = len(sim["patients"]["patient"])
         T = len(sim["dates"]["date"])
@@ -161,12 +172,7 @@ def simulate_states(sim, distance_cutoff, N_infected=15):
         states[infected, 0] = if_else(infected, constants.alpha, 2, 3)
         for t in range(T - 1):
             states, tests_df = simulate_step(
-                states,
-                sim["location"],
-                tests_df,
-                t,
-                sim["N_c"],
-                distance_cutoff=distance_cutoff,
+                states, sim["location"], tests_df, t, sim["N_c"], sim["contacts"]
             )
         return states, tests_df
 

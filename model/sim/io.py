@@ -9,7 +9,7 @@ def save_pickle(sim, filename="simulation.pkl"):
 
 
 def load_pickle(filename="simulation.pkl"):
-    with open(filename, "tb") as handle:
+    with open(filename, "rb") as handle:
         sim = pickle.load(handle)
     return sim
 
