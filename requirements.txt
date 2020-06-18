@@ -10,5 +10,5 @@ tasklogger
 joblib
 seaborn
 
-git+https://github.com/harvardnlp/genbmm
 torch
+git+https://github.com/harvardnlp/genbmm
