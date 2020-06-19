@@ -22,3 +22,9 @@ s<sub>xy</sub> = &sum;<sub>l</sub>&beta;<sup>l</sup>&sdot;|Path<sup>l</sup><sub>
 
 ## Node vs Path-based similarity
 The Katz algorithm above is path-based, whereas the others are all node-based. The latter is better for networks that are mostly local (i.e. highly clustered), whereas path-based things are useful for more global networks. So, if people are practicing social distancing, we can get away with node-based modelling, which is much faster. However, if we find that people are traveling a lot, we may have to implement a path-based similarity indicator. 
+
+[David Liben-Nowell & Jon Kleinberg](https://www.cs.cornell.edu/home/kleinber/link-pred.pdf)
+
+[Daminelli et al 2015](https://arxiv.org/pdf/1504.07011.pdf)
+
+[Huang 2006](https://pdfs.semanticscholar.org/9330/ce333b7b9574da7e77f5f5e08ec8f4de65c7.pdf)
