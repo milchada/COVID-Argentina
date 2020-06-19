@@ -4,3 +4,5 @@ desktop.ini
 *checkpoint.ipynb
 .ipynb_checkpoints
 .DS_Store
+.aws_config.yml
+
